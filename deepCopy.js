@@ -1,4 +1,3 @@
-
 // OBJECT EXAMPLE-------------
 const obj = {
     name: "Daniel",
@@ -14,44 +13,41 @@ const obj = {
 // ------------------
 
 // -------------init here 
-function isObject(element) {
-  return typeof element == "object";
-  // return true or false 
-}
-
-function isArray(element) {
-  return Array.isArray(element);
-  // return true or false 
+function typeOfElement (element){
+  switch (Object.prototype.toString.call(element)){
+    case "[object Object]":
+      return "object";
+    case "object Array ":
+      return "array";
+    default:
+      return "It's probably primitive data."
+  }
 }
 
 function deepCopy(element) {
-  let copyElement;
+  let elementType = typeOfElement(element);
+  if(elementType !== "array" && elementType !== "object") return element;
+  
+  let copyOfElement;
+  if(elementType === "object") copyOfElement = {};
+  if(elementType === "array") copyOfElement = [];
 
-  if (isObject(element)) {
-   copyElement = {};
-  } else if (isArray(element)) {
-   copyElement = [];
-  } else {
-    return element;
+  for(let item in element){
+    copyOfElement[item] = deepCopy(element[item])
   }
 
-  for (key in element) {
-
-    if (isObject(element[key])) {
-     copyElement[key] = deepCopy(element[key]);
-    } 
-    else if (isArray(element[key])) {
-     copyElement.push(element[key]);
-    } 
-    else {
-     copyElement[key] = element[key];
-    }    
-  }
-
-  return copyElement;
+  return copyOfElement;
 }
 // --------------end here 
 
 
-// example test
+// sample test
+console.log('original obj.:', obj);
 const copyObj = deepCopy(obj);
+obj.personalinformation.phone = 12;
+console.log('original obj:', obj);
+console.log('copy obj:', copyObj);
+
+copyObj.personalinformation.phone = 555;
+console.log('copy obj after copy:', copyObj);
+console.log('original obj.:', obj);
